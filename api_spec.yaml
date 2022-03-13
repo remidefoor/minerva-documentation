@@ -1,0 +1,235 @@
+openapi: 3.0.3
+info:
+  title: Minerva
+  description: The entrypoint to all your books and notes of Remeber.
+  version: 0.1.0
+servers:
+  - url: https://laravel.minerva.com/api
+    description: local laravel api
+  - url: https://nodejs.minerva.com/api
+    description: local nodejs api
+tags:
+  - name: users
+  - name: books
+  - name: notes
+
+
+paths:
+  /sign-up:
+    post:
+      operationId: signUp
+      summary: sign-up
+      description: Create a new user based on a unique email address and a password.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        201:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/badRequest'
+  /login:
+    post:
+      operationId: login
+      summary: login
+      description: Login a user based on a unique email address and password.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/badRequest'
+  /books:
+    get:
+      operationId: getBooks
+      summary: get books
+      description: Get all books of a user's library.
+      tags:
+        - books
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/book'
+        401:
+          $ref: '#/components/responses/unauthorized'
+    post:
+      operationId: addBook
+      summary: add book
+      description: Add a new book to a user's library.
+      tags:
+        - books
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/book'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/unauthorized'
+        409:
+          description: The book is already present in the user's library.
+  /books/{isbn}:
+    delete:
+      operationId: deleteBook
+      summary: delete book
+      description: Delete a book from a user's library.
+      tags:
+        - books
+      parameters:
+        - $ref: '#/components/parameters/isbnInPath'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successful operation
+        401:
+          $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
+  /books/{isbn}/notes:
+    get:
+      operationId: getNotes
+      summary: get notes
+      description: Get all notes made to a book.
+      tags:
+        - notes
+      parameters:
+        - $ref: '#/components/parameters/isbnInPath'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/note'
+        401:
+          $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
+    post:
+      operationId: addNote
+      summary: add note
+      description: Add a note to a book.
+      tags:
+        - notes
+      parameters:
+        - $ref: '#/components/parameters/isbnInPath'
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
+  /books/{isbn}/notes/{number}:
+    delete:
+      operationId: deleteNote
+      summary: delete note
+      description: Delete a note made to a book.
+      tags:
+        - notes
+      parameters:
+        - $ref: '#/components/parameters/isbnInPath'
+        - $ref: '#/components/parameters/noteNumberInPath'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successful operation
+        401:
+          $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
+
+
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    book:
+      type: object
+      properties:
+        isbn:
+          type: string
+      required:
+        - isbn
+    note:
+      type: object
+      properties:
+        note:
+          type: string
+      required:
+        - note
+
+  parameters:
+    isbnInPath:
+      name: isbn
+      in: path
+      description: The ISBN of a book.
+      required: true
+      schema:
+        type: string
+    noteNumberInPath:
+      name: number
+      in: path
+      description: The number of a note.
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+  responses:
+    badRequest:
+      description: The request contains an invalid body.
+    unauthorized:
+      description: The request requires authentication.
+    notFound:
+      description: The requested resource was not found.
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
