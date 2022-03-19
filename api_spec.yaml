@@ -15,10 +15,10 @@ tags:
 
 
 paths:
-  /sign-up:
+  /users:
     post:
-      operationId: signUp
-      summary: sign-up
+      operationId: createUser
+      summary: create user
       description: Create a new user based on a unique email address and a password.
       tags:
         - users
@@ -30,7 +30,7 @@ paths:
               $ref: '#/components/schemas/user'
       responses:
         201:
-          description: successful operation
+          description: The user has been created.
         400:
           $ref: '#/components/responses/badRequest'
   /login:
@@ -51,18 +51,20 @@ paths:
           description: successful operation
         400:
           $ref: '#/components/responses/badRequest'
-  /books:
+  /users/{id}/books:
     get:
       operationId: getBooks
       summary: get books
       description: Get all books of a user's library.
       tags:
         - books
+      parameters:
+        - $ref: '#/components/parameters/userIdInPath'
       security:
         - bearerAuth: []
       responses:
         200:
-          description: successful operation
+          description: An array with the user's books is returned.
           content:
             application/json:
               schema:
@@ -71,12 +73,16 @@ paths:
                   $ref: '#/components/schemas/book'
         401:
           $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
     post:
       operationId: addBook
       summary: add book
       description: Add a new book to a user's library.
       tags:
         - books
+      parameters:
+        - $ref: '#/components/parameters/userIdInPath'
       security:
         - bearerAuth: []
       requestBody:
@@ -92,9 +98,11 @@ paths:
           $ref: '#/components/responses/badRequest'
         401:
           $ref: '#/components/responses/unauthorized'
+        404:
+          $ref: '#/components/responses/notFound'
         409:
           description: The book is already present in the user's library.
-  /books/{isbn}:
+  /users/{id}/books/{isbn}:
     delete:
       operationId: deleteBook
       summary: delete book
@@ -102,6 +110,7 @@ paths:
       tags:
         - books
       parameters:
+        - $ref: '#/components/parameters/userIdInPath'
         - $ref: '#/components/parameters/isbnInPath'
       security:
         - bearerAuth: []
@@ -112,7 +121,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
-  /books/{isbn}/notes:
+  /users/{id}/books/{isbn}/notes:
     get:
       operationId: getNotes
       summary: get notes
@@ -120,6 +129,7 @@ paths:
       tags:
         - notes
       parameters:
+        - $ref: '#/components/parameters/userIdInPath'
         - $ref: '#/components/parameters/isbnInPath'
       security:
         - bearerAuth: []
@@ -143,6 +153,7 @@ paths:
       tags:
         - notes
       parameters:
+        - $ref: '#/components/parameters/userIdInPath'
         - $ref: '#/components/parameters/isbnInPath'
       security:
         - bearerAuth: []
@@ -155,7 +166,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
-  /books/{isbn}/notes/{number}:
+  /users/{id}/books/{isbn}/notes/{id}:
     delete:
       operationId: deleteNote
       summary: delete note
@@ -163,8 +174,9 @@ paths:
       tags:
         - notes
       parameters:
+        - $ref: '#/components/parameters/userIdInPath'
         - $ref: '#/components/parameters/isbnInPath'
-        - $ref: '#/components/parameters/noteNumberInPath'
+        - $ref: '#/components/parameters/noteIdInPath'
       security:
         - bearerAuth: []
       responses:
@@ -204,17 +216,21 @@ components:
         - note
 
   parameters:
+    userIdInPath:
+      name: id
+      in: path
+      description: The ID of the user.
     isbnInPath:
       name: isbn
       in: path
-      description: The ISBN of a book.
+      description: The ISBN of the book.
       required: true
       schema:
         type: string
-    noteNumberInPath:
-      name: number
+    noteIdInPath:
+      name: id
       in: path
-      description: The number of a note.
+      description: The ID of the note.
       required: true
       schema:
         type: integer
