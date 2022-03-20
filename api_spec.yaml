@@ -166,6 +166,12 @@ paths:
         - $ref: '#/components/parameters/isbnInPath'
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/note'
       responses:
         201:
           description: successful operation
