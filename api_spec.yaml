@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Minerva
-  description: The entrypoint to all your books and notes of Remeber.
+  description: The entrypoint to all your books and notes of Minerva.
   version: 0.1.0
 servers:
   - url: https://laravel.minerva.com/api
@@ -31,6 +31,15 @@ paths:
       responses:
         201:
           description: The user has been created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                required:
+                  - userId
         400:
           $ref: '#/components/responses/badRequest'
   /login:
