@@ -36,8 +36,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  userId:
+                  id:
                     type: integer
+                    minimum: 1
                 required:
                   - userId
         400:
@@ -101,7 +102,7 @@ paths:
             schema:
               $ref: '#/components/schemas/book'
       responses:
-        200:
+        201:
           description: The book has been added to the user's library.
         400:
           $ref: '#/components/responses/badRequest'
@@ -171,7 +172,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/note'
+              type: object
+              properties:
+                note:
+                  type: string
+              required:
+                - note
       responses:
         201:
           description: The note has been added to the user's book.
@@ -225,9 +231,13 @@ components:
     note:
       type: object
       properties:
+        id:
+          type: integer
+          minimum: 1
         note:
           type: string
       required:
+        - id
         - note
 
   parameters:
@@ -235,6 +245,10 @@ components:
       name: userId
       in: path
       description: The ID of the user.
+      required: true
+      schema:
+        type: integer
+        minimum: 1
     isbnInPath:
       name: isbn
       in: path
