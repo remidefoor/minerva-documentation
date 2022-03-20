@@ -60,7 +60,7 @@ paths:
           description: successful operation
         400:
           $ref: '#/components/responses/badRequest'
-  /users/{id}/books:
+  /users/{userId}/books:
     get:
       operationId: getBooks
       summary: get books
@@ -111,7 +111,7 @@ paths:
           $ref: '#/components/responses/notFound'
         409:
           description: The book is already present in the user's library.
-  /users/{id}/books/{isbn}:
+  /users/{userId}/books/{isbn}:
     delete:
       operationId: deleteBook
       summary: delete book
@@ -130,7 +130,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
-  /users/{id}/books/{isbn}/notes:
+  /users/{userId}/books/{isbn}/notes:
     get:
       operationId: getNotes
       summary: get notes
@@ -175,7 +175,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
-  /users/{id}/books/{isbn}/notes/{id}:
+  /users/{userId}/books/{isbn}/notes/{noteId}:
     delete:
       operationId: deleteNote
       summary: delete note
@@ -226,7 +226,7 @@ components:
 
   parameters:
     userIdInPath:
-      name: id
+      name: userId
       in: path
       description: The ID of the user.
     isbnInPath:
@@ -237,7 +237,7 @@ components:
       schema:
         type: string
     noteIdInPath:
-      name: id
+      name: noteId
       in: path
       description: The ID of the note.
       required: true
