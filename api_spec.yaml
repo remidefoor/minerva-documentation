@@ -34,13 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    minimum: 1
-                required:
-                  - userId
+                $ref: '#/components/schemas/id'
         400:
           $ref: '#/components/responses/badRequest'
   /users/log-in:
@@ -188,13 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    minimum: 1
-                required:
-                  - id
+                $ref: '#/components/schemas/id'
         400:
           $ref: '#/components/responses/badRequest'
         401:
