@@ -43,11 +43,11 @@ paths:
                   - userId
         400:
           $ref: '#/components/responses/badRequest'
-  /login:
+  /users/log-in:
     post:
-      operationId: login
-      summary: login
-      description: Login a user based on a unique email address and password.
+      operationId: logIn
+      summary: log in
+      description: Log a user in based on a unique email address and a password.
       tags:
         - users
       requestBody:
@@ -58,7 +58,11 @@ paths:
               $ref: '#/components/schemas/user'
       responses:
         200:
-          description: successful operation
+          description: The user was logged in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/id'
         400:
           $ref: '#/components/responses/badRequest'
   /users/{userId}/books:
@@ -181,6 +185,16 @@ paths:
       responses:
         201:
           description: The note has been added to the user's book.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    minimum: 1
+                required:
+                  - id
         400:
           $ref: '#/components/responses/badRequest'
         401:
@@ -211,6 +225,14 @@ paths:
 
 components:
   schemas:
+    id:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+      required:
+        - id
     user:
       type: object
       properties:
