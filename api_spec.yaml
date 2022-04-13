@@ -213,6 +213,24 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
+  /books/bestsellers:
+    get:
+      operationId: getBestsellers
+      summary: get bestsellers
+      description: Get a list with the most selled novels in the wordl.
+      tags:
+        - laravel backend only
+      parameters:
+        - $ref: '#/components/parameters/languageInQuery'
+      responses:
+        200:
+          description: An array with the best selling books in the world is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bestseller'
 
 
 components:
@@ -253,6 +271,27 @@ components:
       required:
         - id
         - note
+    bestseller:
+      type: object
+      properties:
+        copies_sold:
+          type: integer
+        translations:
+          type: object
+          properties:
+            language:
+              type: string
+              enum:
+                - en
+                - nl
+            title:
+              type: string
+          required:
+            - language
+            - title
+      required:
+        - copies_sold
+        - translations
 
   parameters:
     userIdInPath:
@@ -278,6 +317,15 @@ components:
       schema:
         type: integer
         minimum: 1
+    languageInQuery:
+      name: language
+      in: query
+      description: The language in which the data should be returned. The default is English.
+      schema:
+        type: string
+        enum:
+          - en
+          - nl
 
   responses:
     badRequest:
