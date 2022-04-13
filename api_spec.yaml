@@ -213,6 +213,29 @@ paths:
           $ref: '#/components/responses/unauthorized'
         404:
           $ref: '#/components/responses/notFound'
+  /users/{userId}/notifications/subscription:
+    post:
+      operationId: addSubscription
+      summary: add subscription
+      description: Add a user's subscription for notifcations.
+      parameters:
+        - $ref: '#/components/parameters/userIdInPath'
+      tags:
+        - node.js backend only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/subscription"
+      responses:
+        200:
+          description: The subscription has been saved.
+        400:
+          $ref: '#/components/responses/badRequest'
+        404:
+          $ref: '#/components/responses/notFound'
+
   /books/bestsellers:
     get:
       operationId: getBestsellers
@@ -271,6 +294,24 @@ components:
       required:
         - id
         - note
+    subscription:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        keys:
+          type: object
+          properties:
+            p256dh:
+              type: string
+            auth:
+              type: string
+          required:
+            - p256dh
+            - auth
+      required:
+        - endpoint
+        - keys
     bestseller:
       type: object
       properties:
