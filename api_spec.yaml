@@ -4,9 +4,9 @@ info:
   description: The entrypoint to all your books and notes of Minerva.
   version: 0.1.0
 servers:
-  - url: https://laravel.minerva.com/api
+  - url: http://laravel.minerva.com/api
     description: local laravel api
-  - url: https://nodejs.minerva.com/api
+  - url: http://node.minerva.com/api
     description: local nodejs api
 tags:
   - name: users
@@ -279,10 +279,10 @@ components:
     book:
       type: object
       properties:
-        isbn:
+        ISBN:
           type: string
       required:
-        - isbn
+        - ISBN
     note:
       type: object
       properties:
